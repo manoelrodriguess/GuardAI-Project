@@ -1,42 +1,47 @@
-# GuardAI — desenvolvimento local
+# GuardAI — execução local
 
 Protótipo React/Vite com uma API local em Python (FastAPI) e banco SQLite. Os dados de cadastro ficam em `backend/data/guardai.db` e permanecem entre reinicializações.
 
-## Requisitos
+## Executar em outra máquina (Windows)
 
-- Python 3.10 ou superior
-- Node.js e npm
+Instale Python 3.10 ou superior e Node.js 20.19 ou superior (ou 22.12 ou superior). Abra dois terminais PowerShell na pasta do projeto.
 
-## Iniciar no Windows
+### Backend
 
-Na raiz do projeto, execute no PowerShell:
-
-```powershell
-.\run-local.ps1
-```
-
-O script cria o ambiente virtual `.venv`, instala as dependências Python e inicia os dois serviços. Acesse o frontend em <http://127.0.0.1:5173>. A documentação interativa da API fica em <http://127.0.0.1:8000/docs>. Encerre ambos com `Ctrl+C`.
-
-Se a porta 5173 ou 8000 estiver ocupada, feche o serviço que já a utiliza antes de iniciar o protótipo.
-
-## Iniciar manualmente
-
-Terminal 1 — backend:
+No primeiro terminal, entre na pasta `backend`:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
-.\.venv\Scripts\python.exe -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+cd backend
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --reload --port 8000
 ```
 
-Terminal 2 — frontend:
+### Frontend
+
+No segundo terminal, também aberto na pasta do projeto, entre em `frontend`:
 
 ```powershell
-npm install --no-package-lock
-npm run dev -- --host 127.0.0.1 --port 5173
+cd frontend
+npm install
+npm run dev
 ```
 
-O Vite encaminha `/api` para o backend local. Também é possível testar a API diretamente pela interface Swagger em `/docs`.
+Na primeira execução, os comandos de instalação (`python -m pip install ...` e `npm install`) baixam as dependências. Depois, basta iniciar o backend e o frontend com `python -m uvicorn main:app --reload --port 8000` e `npm run dev`, respectivamente. Deixe os dois terminais abertos enquanto usa o projeto; para encerrar, pressione `Ctrl+C` em cada um.
+
+Como alternativa, execute `.\run-local.ps1` na pasta do projeto para instalar o que falta e iniciar os dois serviços juntos.
+
+### Endereços
+
+Os serviços **não usam a mesma porta**:
+
+| Serviço | Endereço |
+| --- | --- |
+| Frontend | <http://127.0.0.1:5173> |
+| Backend (documentação da API) | <http://127.0.0.1:8000/docs> |
+
+O frontend encaminha automaticamente as chamadas `/api` para o backend na porta `8000`. Se uma das portas estiver ocupada, encerre o processo que a utiliza antes de iniciar o projeto.
+
+Os endereços `127.0.0.1` permitem acesso apenas pela própria máquina em que os serviços estão rodando. Para executar em outro computador, inicie o projeto nesse computador e abra os endereços acima nele. Acessar o frontend a partir de um segundo dispositivo na rede exige configuração adicional e não está habilitado por padrão.
 
 ## API disponível
 
