@@ -13,9 +13,12 @@ if (-not (Test-Path $python)) {
     }
 }
 
-& $python -m pip install -r $requirements
+& $python -c "import importlib.util, sys; sys.exit(0 if all(importlib.util.find_spec(name) for name in ('fastapi', 'uvicorn')) else 1)"
 if ($LASTEXITCODE -ne 0) {
-    throw "Não foi possível instalar as dependências do backend."
+    & $python -m pip install -r $requirements
+    if ($LASTEXITCODE -ne 0) {
+        throw "Não foi possível instalar as dependências do backend."
+    }
 }
 
 if (-not (Test-Path (Join-Path $frontendPath "node_modules"))) {
@@ -34,9 +37,19 @@ if (-not (Test-Path (Join-Path $frontendPath "node_modules"))) {
 $backend = Start-Process -FilePath $python `
     -ArgumentList @("-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000") `
     -WorkingDirectory $backendPath `
+    -WindowStyle Hidden `
     -PassThru
 
 try {
+    $ready = $false
+    for ($attempt = 0; $attempt -lt 30; $attempt++) {
+        if ($backend.HasExited) { throw "O backend não iniciou. Confira se a porta 8000 está livre." }
+        try {
+            $health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/health" -TimeoutSec 2
+            if ($health.status -eq "ok") { $ready = $true; break }
+        } catch { Start-Sleep -Milliseconds 500 }
+    }
+    if (-not $ready) { throw "O backend não respondeu. Confira as dependências e a porta 8000." }
     Write-Host "Backend: http://127.0.0.1:8000/docs"
     Write-Host "Frontend: http://127.0.0.1:5173"
     Push-Location $frontendPath

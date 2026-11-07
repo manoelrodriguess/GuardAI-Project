@@ -15,11 +15,13 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     proxy: {
-      "/api": "http://127.0.0.1:8000",
+      "/api": process.env.GUARDAI_API_TARGET ?? "http://127.0.0.1:8000",
     },
   },
   preview: {
     host: "127.0.0.1",
     port: 4173,
+    strictPort: true,
+    proxy: { "/api": process.env.GUARDAI_API_TARGET ?? "http://127.0.0.1:8000" },
   },
 })

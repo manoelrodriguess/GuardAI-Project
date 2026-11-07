@@ -1,56 +1,64 @@
-# GuardAI — execução local
+# GuardAI
 
-Protótipo React/Vite com uma API local em Python (FastAPI) e banco SQLite. Os dados de cadastro ficam em `backend/data/guardai.db` e permanecem entre reinicializações.
+Aplicação React/Vite com API Python/FastAPI e SQLite para cadastro de idosos e responsáveis, Círculo de Segurança e simulações de chamadas.
 
-## Executar em outra máquina (Windows)
+## Executar no Windows
 
-Instale Python 3.10 ou superior e Node.js 20.19 ou superior (ou 22.12 ou superior). Abra dois terminais PowerShell na pasta do projeto.
+Requisitos: Python 3.10+ e Node.js 20.19+ ou 22.12+.
 
-### Backend
+Abra dois terminais PowerShell na pasta interna `Prototipo de Onboarding e Cadastro`.
 
-No primeiro terminal, entre na pasta `backend`:
+**Backend — primeira instalação:**
 
-```powershell
+powershell
 cd backend
-python -m pip install -r requirements.txt
-python -m uvicorn main:app --reload --port 8000
-```
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
-### Frontend
 
-No segundo terminal, também aberto na pasta do projeto, entre em `frontend`:
+Depois, dentro de `backend`, inicie a API:
 
-```powershell
+powershell
+.\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+
+
+**Frontend — segundo terminal:**
+
+powershell
 cd frontend
 npm install
 npm run dev
-```
 
-Na primeira execução, os comandos de instalação (`python -m pip install ...` e `npm install`) baixam as dependências. Depois, basta iniciar o backend e o frontend com `python -m uvicorn main:app --reload --port 8000` e `npm run dev`, respectivamente. Deixe os dois terminais abertos enquanto usa o projeto; para encerrar, pressione `Ctrl+C` em cada um.
 
-Como alternativa, execute `.\run-local.ps1` na pasta do projeto para instalar o que falta e iniciar os dois serviços juntos.
+Nas próximas execuções, não é necessário reinstalar as dependências nem recriar `.venv`.
 
-### Endereços
+- Site: http://127.0.0.1:5173
+- Documentação da API: http://127.0.0.1:8000/docs
+- Para encerrar: `Ctrl+C` nos dois terminais.
 
-Os serviços **não usam a mesma porta**:
+## Testar o sistema
 
-| Serviço | Endereço |
-| --- | --- |
-| Frontend | <http://127.0.0.1:5173> |
-| Backend (documentação da API) | <http://127.0.0.1:8000/docs> |
+1. Cadastre um idoso e um responsável com telefones diferentes. Entre com telefone e senha.
+2. Em **Menu → Círculo de Segurança**, adicione a outra pessoa pelo telefone. Entre na outra conta e aceite o convite.
+3. Para usar as duas contas simultaneamente, abra uma janela normal e outra anônima.
+4. O idoso autoriza o monitoramento no cadastro ou nas configurações. No painel, use **Iniciar demonstração**; o responsável pode acompanhar a chamada e registrar seu parecer.
+5. Consulte o **Histórico** para conferir os resultados salvos. As chamadas e os dados do catálogo são demonstrativos.
 
-O frontend encaminha automaticamente as chamadas `/api` para o backend na porta `8000`. Se uma das portas estiver ocupada, encerre o processo que a utiliza antes de iniciar o projeto.
+## Editar, excluir e exportar
 
-Os endereços `127.0.0.1` permitem acesso apenas pela própria máquina em que os serviços estão rodando. Para executar em outro computador, inicie o projeto nesse computador e abra os endereços acima nele. Acessar o frontend a partir de um segundo dispositivo na rede exige configuração adicional e não está habilitado por padrão.
+- **Minha conta:** Configurações → Editar perfil ou Excluir minha conta.
+- **Pessoas vinculadas:** na conta do responsável, Configurações → Dados do meu círculo → botão de lápis. Permite editar os dados ou excluir o vínculo, preservando a conta da pessoa.
+- **CSV:** nessa mesma tela, clique em Exportar CSV. O navegador baixa `guardai-perfis.csv`, com separador `;`, para abrir no Excel ou LibreOffice.
 
-## API disponível
+Os dados permanecem em `backend/data/guardai.db`. Editar o CSV não altera o banco. Alterações de telefone passam a valer no login.
 
-- `GET /api/health` — estado da API e do SQLite.
-- `GET /api/profiles` e `POST /api/profiles` — listar e cadastrar perfis.
-- `GET /api/analyses` e `POST /api/analyses` — consultar análises de demonstração e enviar texto para avaliação.
+## Cadastros antigos sem senha
 
-A avaliação atual usa regras locais (`engine: mock-rules`), não uma IA. O texto enviado para análise não é persistido; apenas o nível de risco e os indicadores são salvos no histórico. Este backend é para desenvolvimento local e ainda não implementa autenticação ou controles de produção.
+Dentro de `backend`, liste os cadastros e ative o ID desejado, substituindo `1`:
 
-## Preparação para IA
+powershell
+.\.venv\Scripts\python.exe activate_profile.py --list
+.\.venv\Scripts\python.exe activate_profile.py --profile-id 1
 
-O endpoint de análises é um ponto inicial para substituir o avaliador demonstrativo por um serviço de IA. Credenciais devem ser configuradas apenas no backend (por variáveis de ambiente); não as coloque no frontend nem no repositório.
+
+O terminal solicitará uma senha para entrar no site.
