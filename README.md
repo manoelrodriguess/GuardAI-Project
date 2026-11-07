@@ -11,7 +11,9 @@ Abra dois terminais PowerShell na pasta interna `Prototipo de Onboarding e Cadas
 **Backend — primeira instalação:**
 
 powershell
+
 cd backend
+
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
@@ -25,7 +27,9 @@ powershell
 **Frontend — segundo terminal:**
 
 powershell
+
 cd frontend
+
 npm install
 npm run dev
 
