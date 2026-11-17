@@ -12,7 +12,7 @@ Abra dois terminais PowerShell na pasta interna `Prototipo de Onboarding e Cadas
 
 powershell
 
-cd backend
+cd backen
 
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
