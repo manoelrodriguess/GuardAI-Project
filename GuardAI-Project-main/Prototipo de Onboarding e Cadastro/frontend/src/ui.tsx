@@ -1,5 +1,4 @@
 import { type ReactNode } from "react"
-import guardAILogo from "./imports/GuardAI-logo.png"
 import guardAIWhiteLogo from "./imports/GuardAI-logo-white.png"
 type I = "shield" | "phone" | "users" | "bell" | "book" | "gear" | "check" | "warn" | "back" | "lock" | "mic" | "volume" | "user" | "message" | "edit"
 const paths: Record<I, ReactNode> = {
@@ -83,7 +82,7 @@ function Logo({ light = false }: { light?: boolean }) {
   return (
     <div className={"logo " + (light ? "light" : "")}>
       <img
-        src={light ? guardAIWhiteLogo : guardAILogo}
+        src={guardAIWhiteLogo}
         alt="GuardAI — Mais segurança contra golpes. Juntos, em todas as ligações."
       />
     </div>
