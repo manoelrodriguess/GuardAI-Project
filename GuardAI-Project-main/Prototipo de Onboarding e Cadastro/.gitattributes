@@ -1,0 +1,7 @@
+# Configuração padrão de tratamento de binários (sem LFS)
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.gif -text
+*.webp -text
+*.svg -text
