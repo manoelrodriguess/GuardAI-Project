@@ -4,6 +4,9 @@ from getpass import getpass
 import sqlite3
 from main import connect_database, initialize_database, password_hash, phone_key
 
+MIN_PASSWORD = 8
+MAX_PASSWORD = 128
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--list", action="store_true", help="Listar cadastros antigos ainda sem senha")
 parser.add_argument("--profile-id", type=int)
@@ -20,8 +23,8 @@ with connect_database() as connection:
         if connection.execute("SELECT 1 FROM accounts WHERE profile_id=?", (args.profile_id,)).fetchone():
             parser.exit(1, "Este cadastro já possui uma conta. Use Entrar.\n")
         print(f"Ativando conta de {row['name']} ({row['phone']}).")
-        password = getpass("Nova senha (8 a 128 caracteres): ")
-        if not 8 <= len(password) <= 128 or password != getpass("Confirme a senha: "):
+        password = getpass(f"Nova senha ({MIN_PASSWORD} a {MAX_PASSWORD} caracteres): ")
+        if not MIN_PASSWORD <= len(password) <= MAX_PASSWORD or password != getpass("Confirme a senha: "):
             parser.exit(1, "Senha inválida ou confirmação diferente.\n")
         try:
             connection.execute("INSERT INTO accounts VALUES (?,?,?)", (row['id'], phone_key(row['phone']), password_hash(password)))
