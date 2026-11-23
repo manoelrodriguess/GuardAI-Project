@@ -15,13 +15,11 @@ powershell
 cd backend
 
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-
+python.exe -m pip install -r requirements.txt
 
 Depois, dentro de `backend`, inicie a API:
 
-powershell
-.\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
 
 **Frontend — segundo terminal:**
@@ -56,13 +54,3 @@ Nas próximas execuções, não é necessário reinstalar as dependências nem r
 
 Os dados permanecem em `backend/data/guardai.db`. Editar o CSV não altera o banco. Alterações de telefone passam a valer no login.
 
-## Cadastros antigos sem senha
-
-Dentro de `backend`, liste os cadastros e ative o ID desejado, substituindo `1`:
-
-powershell
-.\.venv\Scripts\python.exe activate_profile.py --list
-.\.venv\Scripts\python.exe activate_profile.py --profile-id 1
-
-
-O terminal solicitará uma senha para entrar no site.
